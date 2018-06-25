@@ -25,6 +25,7 @@ app.post('/connect/:carname', function (req, res) {
     var carName = req.params.carname
     log.verbose(BLE, "Trying to connect to " + carName)
     ankiNodeUtils.connectCar(carName);
+    res.set('Content-Type', 'application/json');
     res.send(JSON.stringify({ result: "Success"}));
     res.end();
 });
@@ -33,6 +34,7 @@ app.post('/disconnect/:carname', function (req, res) {
     var carName = req.params.carname
     log.verbose(BLE, "Trying to disonnect to "+carName)
     ankiNodeUtils.disconnectCar(carName);
+    res.set('Content-Type', 'application/json');
     res.send(JSON.stringify({ result: "Success"}));
     res.end();
 });
@@ -41,6 +43,7 @@ app.post('/setSpeed/:carname/:speedValue', function (req, res) {
   var carName = req.params.carname
   var speed = req.params.speedValue
   ankiNodeUtils.setSpeed(carName,speed);
+  res.set('Content-Type', 'application/json');
   res.send(JSON.stringify({ result: "Success"}));
   res.end();
 });
@@ -49,6 +52,7 @@ app.post('/changeLanes/:carname/:changeValue', function (req, res) {
   var carName = req.params.carname
   var change = req.params.changeValue
   ankiNodeUtils.changeLanes(carName,change);
+  res.set('Content-Type', 'application/json');
   res.send(JSON.stringify({ result: "Success"}));
   res.end();
 });
@@ -57,48 +61,56 @@ app.post('/setLaneOffset/:carname/:changeValue', function (req, res) {
   var carName = req.params.carname
   var change = req.params.changeValue
   ankiNodeUtils.setLaneOffset(carName,change);
+  res.set('Content-Type', 'application/json');
   res.send(JSON.stringify({ result: "Success"}));
   res.end();
 });
 
 app.post('/turnOnHeadlights/:carname', function (req, res) {
   result = ankiNodeUtils.setLights(req.params.carname,0x44);
+  res.set('Content-Type', 'application/json');
   res.send(JSON.stringify({ result: "Success"}));
   res.end();
 });
 
 app.post('/turnOffHeadlights/:carname', function (req, res) {
   result = ankiNodeUtils.setLights(req.params.carname,0x04);
+  res.set('Content-Type', 'application/json');
   res.send(JSON.stringify({ result: "Success"}));
   res.end();
 });
 
 app.post('/turnOnTaillights/:carname', function (req, res) {
   result = ankiNodeUtils.setLights(req.params.carname,0x22);
+  res.set('Content-Type', 'application/json');
   res.send(JSON.stringify({ result: "Success"}));
   res.end();
 });
 
 app.post('/flashTaillights/:carname', function (req, res) {
   result = ankiNodeUtils.setLights(req.params.carname,0x88);
+  res.set('Content-Type', 'application/json');
   res.send(JSON.stringify({ result: "Success"}));
   res.end();
 });
 
 app.post('/turnOffTaillights/:carname', function (req, res) {
   result = ankiNodeUtils.setLights(req.params.carname,0x02);
+  res.set('Content-Type', 'application/json');
   res.send(JSON.stringify({ result: "Success"}));
   res.end();
 });
 
 app.post('/setEngineLight/:carName/:red/:green/:blue', function (req, res) {
   ankiNodeUtils.setEngineLight(req.params.carName,req.params.red,req.params.green,req.params.blue);
+  res.set('Content-Type', 'application/json');
   res.send(JSON.stringify({ result: "Success"}));
   res.end();
 });
 
 app.get('/ping/:carname', function (req, res) {
   ankiNodeUtils.ping(req.params.carname).then(function(data) {
+    res.set('Content-Type', 'application/json');
     res.send(JSON.stringify({ ping: data}));
     log.verbose(BLE, "Returning value");
     res.end();
@@ -107,6 +119,7 @@ app.get('/ping/:carname', function (req, res) {
 
 app.get('/batteryLevel/:carname', function (req, res) {
   ankiNodeUtils.batteryLevel(req.params.carname).then(function(level) {
+    res.set('Content-Type', 'application/json');
     res.send(JSON.stringify({ battery: level}));
     log.verbose(BLE, "Returning value");
     res.end();
@@ -115,12 +128,14 @@ app.get('/batteryLevel/:carname', function (req, res) {
 
 app.get('/uturn/:carname', function (req, res) {
   ankiNodeUtils.uTurn(req.params.carname);
+  res.set('Content-Type', 'application/json');
   res.send(JSON.stringify({ result: "Success"}));
   res.end();
 });
 
 app.get('/getDevices', function (req, res) {
   res.contentType('application/json');
+  res.set('Content-Type', 'application/json');
   res.send(JSON.stringify({ carList: carList}));
   res.end();
 });
@@ -128,6 +143,7 @@ app.get('/getDevices', function (req, res) {
 app.post('/rescan', function (req, res) {
     log.verbose(BLE, "Rescan");
     ankiNodeUtils.rescan();
+    res.set('Content-Type', 'application/json');
     res.send(JSON.stringify({ result: "Success"}));
     res.end();
 });
@@ -136,6 +152,7 @@ app.post('/turnOnLogging/:carname', function (req, res) {
     var carName = req.params.carname
     log.verbose(BLE, "Turn on logging: "+carName);
     ankiNodeUtils.turnOnLogging(carName);
+    res.set('Content-Type', 'application/json');
     res.send(JSON.stringify({ result: "Success"}));
     res.end();
 });
@@ -146,19 +163,22 @@ app.post('/trackCountTravel/:carname/:trackCount/:speed', function (req, res) {
     var speed = req.params.speed
     log.verbose(BLE, "trackCountTravel: "+carName+" - "+trackCount+" - "+speed);
     ankiNodeUtils.trackCountTravel(carName,trackCount,speed);
+    res.set('Content-Type', 'application/json');
     res.send(JSON.stringify({ result: "Success"}));
     res.end();
 });
 
 app.get('/exit', function (req, res) {
-    res.send(JSON.stringify({ result: "Success"}));
-    res.end();
-    process.exit();
+  res.set('Content-Type', 'application/json');
+  res.send(JSON.stringify({ result: "Success"}));
+  res.end();
+  process.exit();
 });
 
 app.get('/ping', function (req, res) {
-    res.send(JSON.stringify({ result: "Success"}));
-    res.end();
+  res.set('Content-Type', 'application/json');
+  res.send(JSON.stringify({ result: "Success"}));
+  res.end();
 });
 
 // Custom API for WEDO Industry
@@ -170,6 +190,7 @@ app.post('/start/:carname/:speedAlias', function (req, res) {
   if (!speedRecord) {
     var message = "Unknown spped parameter: " + speedAlias;
     log.error(REST, message);
+    res.set('Content-Type', 'application/json');
     res.send(JSON.stringify({ result: "Failure", message: message}));
     res.end();
     return;
@@ -177,11 +198,13 @@ app.post('/start/:carname/:speedAlias', function (req, res) {
   if (!ankiNodeUtils.checkCar(carName)) {
     var message = "Car '" + carName + "' not found or discovered";
     log.error(REST, message);
+    res.set('Content-Type', 'application/json');
     res.send(JSON.stringify({ result: "Failure", message: message}));
     res.end();
     return;
   }
   ankiNodeUtils.setSpeed(carName, speedRecord.speed);
+  res.set('Content-Type', 'application/json');
   res.send(JSON.stringify({ result: "Success"}));
   res.end();
 });
@@ -192,11 +215,13 @@ app.post('/stop/:carname', function (req, res) {
   if (!ankiNodeUtils.checkCar(carName)) {
     var message = "Car '" + carName + "' not found or discovered";
     log.error(REST, message);
+    res.set('Content-Type', 'application/json');
     res.send(JSON.stringify({ result: "Failure", message: message}));
     res.end();
     return;
   }
   ankiNodeUtils.setSpeed(carName, speedRecord.speed);
+  res.set('Content-Type', 'application/json');
   res.send(JSON.stringify({ result: "Success"}));
   res.end();
 });
@@ -208,6 +233,7 @@ app.post('/changeLane/:carname/:laneAlias', function (req, res) {
   if (!laneRecord) {
     var message = "Unknown lane parameter: " + laneRecord;
     log.error(REST, message);
+    res.set('Content-Type', 'application/json');
     res.send(JSON.stringify({ result: "Failure", message: message}));
     res.end();
     return;
