@@ -215,6 +215,7 @@ app.post('/changeLane/:carname/:laneAlias', function (req, res) {
   if (!ankiNodeUtils.checkCar(carName)) {
     var message = "Car '" + carName + "' not found or discovered";
     log.error(REST, message);
+    res.set('Content-Type', 'application/json');
     res.send(JSON.stringify({ result: "Failure", message: message}));
     res.end();
     return;
