@@ -370,7 +370,7 @@ function getWriterCharacteristic(carName) {
             return;
           }
         }
-        .reject("Unable to connect to car");
+        reject("Unable to connect to car");
       });
   });
   return(getWriterPromise);
