@@ -246,6 +246,7 @@ var connectCar = function(carName) {
      carName == "Nuke" ||
      carName == "Big Bang" ||
      carName == "Free Wheel" ||
+     carName == "X52" ||
      carName == "X52 Ice") {
     for(var i=0; i<carList.length;i++) {
       if(carList[i].carName == carName) {
@@ -261,8 +262,11 @@ var connectCar = function(carName) {
     }
   }
   if(peripheral == null) {
-    return ("Car not found");//TBD: Do a rescan and try again...
+    log.error(BLE, "Car not found");
+    return ("Car not found"); //TBD: Do a rescan and try again...
   }
+
+//  log.verbose(BLE, "Car found. Peripheral: " + peripheral);
 
   peripheral.on('disconnect', function() {
     log.verbose(BLE, 'Car has been disconnected');
@@ -366,7 +370,7 @@ function getWriterCharacteristic(carName) {
             return;
           }
         }
-        reject("Unable to connect to car");
+        .reject("Unable to connect to car");
       });
   });
   return(getWriterPromise);
