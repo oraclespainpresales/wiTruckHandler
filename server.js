@@ -246,6 +246,7 @@ app.post('/changeLane/:carname/:laneAlias', function (req, res) {
     res.end();
     return;
   }
+  console.log(laneRecord);
   ankiNodeUtils.changeLanes(carName, laneRecord.laneOffset);
   res.send(JSON.stringify({ result: "Success"}));
   res.end();
