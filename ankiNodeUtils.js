@@ -118,7 +118,7 @@ noble.on('disconnect', function(peripheral) {
 });
 
 //////////////////////////////////////////////////////////
-// Rescan
+// checkCar
 //////////////////////////////////////////////////////////
 var checkCar = function(carname) {
   return (_.find(carList, { carName : carname }) !== undefined);
