@@ -16,9 +16,7 @@ log.level     = 'verbose';
 log.info(PROCESS, "WEDO Industry - Truck Handler - 1.0");
 log.info(PROCESS, "Author: John Graves <john.graves@oracle.com> (Main code)");
 log.info(PROCESS, "        Carlos Casares <carlos.casares@oracle.com> (WEDO Industry tailoring)");
-
-var bleDeviceId = process.env.NOBLE_HCI_DEVICE_ID || 0;
-log.info(BLE, "Using BLE device id: " + bleDeviceId);
+log.info(BLE, "Using BLE device id: " + (process.env.NOBLE_HCI_DEVICE_ID || 0));
 
 var app = express();
 app.use(bodyParser.urlencoded({extended: false}));
