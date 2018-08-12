@@ -232,7 +232,7 @@ app.post('/changeLane/:carname/:laneAlias', function (req, res) {
   var laneAlias = req.params.laneAlias;
   var laneRecord = _.find(LANES, { alias: laneAlias } );
   if (!laneRecord) {
-    var message = "Unknown lane parameter: " + laneRecord;
+    var message = "Unknown lane parameter: " + laneAlias;
     log.error(REST, message);
     res.set('Content-Type', 'application/json');
     res.send(JSON.stringify({ result: "Failure", message: message}));
