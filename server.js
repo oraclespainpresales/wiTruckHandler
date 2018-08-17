@@ -8,7 +8,9 @@ const log = require('npmlog-ts')
     , express = require('express')
     , bodyParser = require('body-parser')
 ;
-//var trackMap = require('./trackMap.js')();
+
+const PORT = 7877
+;
 
 log.timestamp = true;
 log.level     = 'verbose';
@@ -268,11 +270,9 @@ app.post('/changeLane/:carname/:laneAlias', function (req, res) {
   res.end();
 });
 
-//app.use('/', express.static('apidoc'));
-
 //////////////////////////////////////////////////////////
 // Start listener
 //////////////////////////////////////////////////////////
-var server = app.listen(7877, function () {
-  log.info(PROCESS, "Listening at http://localhost:7877");
+var server = app.listen(PORT, function () {
+  log.info(PROCESS, "Listening at http://localhost:" + PORT);
 })
