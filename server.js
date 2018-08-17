@@ -13,6 +13,8 @@ const log = require('npmlog-ts')
 log.timestamp = true;
 log.level     = 'verbose';
 
+var movingTruck = _.noop(); // We need to know the moving truck by the time we request to stop it when it reaches the finish line
+
 log.info(PROCESS, "WEDO Industry - Truck Handler - 1.0");
 log.info(PROCESS, "Author: John Graves <john.graves@oracle.com> (Main code)");
 log.info(PROCESS, "        Carlos Casares <carlos.casares@oracle.com> (WEDO Industry tailoring)");
@@ -208,6 +210,7 @@ app.post('/start/:carname/:speedAlias', function (req, res) {
   res.set('Content-Type', 'application/json');
   res.send(JSON.stringify({ result: "Success"}));
   res.end();
+  movingTruck = carName;
 });
 
 app.post('/stop/:carname', function (req, res) {
@@ -225,6 +228,7 @@ app.post('/stop/:carname', function (req, res) {
   res.set('Content-Type', 'application/json');
   res.send(JSON.stringify({ result: "Success"}));
   res.end();
+  movingTruck = _.noop();
 });
 
 app.post('/changeLane/:carname/:laneAlias', function (req, res) {
