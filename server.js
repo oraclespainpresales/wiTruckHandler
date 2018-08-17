@@ -213,9 +213,21 @@ app.post('/start/:carname/:speedAlias', function (req, res) {
   movingTruck = carName;
 });
 
-app.post('/stop/:carname', function (req, res) {
+app.post('/stop/:carname?', function (req, res) {
   var carName = req.params.carname;
   var speedRecord = _.find(SPEED, { alias: 'stop' } );
+  if (!carName) {
+    // Stop the moving truck, whichever it is
+    if (!movingTruck) {
+      var message = "No trucks moving";
+      log.error(REST, message);
+      res.set('Content-Type', 'application/json');
+      res.send(JSON.stringify({ result: "Failure", message: message}));
+      res.end();
+      return;
+    }
+    carName = movingTruck;
+  }
   if (!ankiNodeUtils.checkCar(carName)) {
     var message = "Car '" + carName + "' not found or discovered";
     log.error(REST, message);
