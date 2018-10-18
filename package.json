@@ -21,8 +21,10 @@
     "async": "^2.6.1",
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
+    "fs-extra": "^7.0.0",
     "lodash": "^4.17.10",
     "noble": "^1.9.1",
-    "npmlog-ts": "0.0.1"
+    "npmlog-ts": "0.0.1",
+    "restify-clients": "^2.6.2"
   }
 }

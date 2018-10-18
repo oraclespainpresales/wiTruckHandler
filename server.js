@@ -7,9 +7,14 @@ const log = require('npmlog-ts')
     , ankiNodeUtils = require('./ankiNodeUtils.js')()
     , express = require('express')
     , bodyParser = require('body-parser')
+    , restify = require('restify-clients')
+    , fs = require('fs-extra')
 ;
 
 const PORT = 7877
+    , KAFKATOPIC = "gse00011668-wedoindustryactions"
+    , KAFKAURL   = "http://infra.digitalpracticespain.com:10200"
+    , KAFKAURI   = "/kafka/send/" + KAFKATOPIC
 ;
 
 log.timestamp = true;
@@ -17,10 +22,28 @@ log.level     = 'verbose';
 
 var movingTruck = _.noop(); // We need to know the moving truck by the time we request to stop it when it reaches the finish line
 
-log.info(PROCESS, "WEDO Industry - Truck Handler - 1.0");
+log.info(PROCESS, "WEDO Industry - Truck Handler - 1.0.1");
 log.info(PROCESS, "Author: John Graves <john.graves@oracle.com> (Main code)");
 log.info(PROCESS, "        Carlos Casares <carlos.casares@oracle.com> (WEDO Industry tailoring)");
 log.info(BLE, "Using BLE device id: " + (process.env.NOBLE_HCI_DEVICE_ID || 0));
+
+// Get demozone Data
+var DEMOZONE = DEFAULTDEMOZONE;
+fs.readFile(DEMOZONEFILE,'utf8').then((data)=>{DEMOZONE=data.trim();log.info(PROCESS, 'Working for demozone: %s', DEMOZONE);}).catch(() => {});
+
+// Initializing REST client BEGIN
+var kafkaProxy = restify.createJsonClient({
+  url: KAFKAURL,
+  connectTimeout: 5000,
+  requestTimeout: 5000,
+  retry: false,
+  rejectUnauthorized: false,
+  headers: {
+    "content-type": "application/json",
+    "accept": "application/json"
+  }
+});
+// Initializing REST client END
 
 var app = express();
 app.use(bodyParser.urlencoded({extended: false}));
@@ -213,6 +236,23 @@ app.post('/start/:carname/:speedAlias', function (req, res) {
   res.send(JSON.stringify({ result: "Success"}));
   res.end();
   movingTruck = carName;
+  // Send Kafka message to start Data Pump
+  var body = {
+    demozone: DEMOZONE,
+    component: 'XDK',
+    action: 'start',
+    truckid: DEMOZONE.substring(0,3) + movingTruck.toUpperCase(),
+    timer: DURATION
+  }
+  log.verbose(REST, "Publishing Truck action to Kafka");
+  kafkaProxy.post(KAFKAURI, body, (err, req, res, data) => {
+    if (err) {
+      if (err.statusCode) {
+        log.error(IOTCS,"Error publishing Truck action to Kafka: " + err.statusCode);
+      }
+      return;
+    }
+  });
 });
 
 app.post('/stop/:carname?', function (req, res) {
@@ -242,6 +282,23 @@ app.post('/stop/:carname?', function (req, res) {
   res.set('Content-Type', 'application/json');
   res.send(JSON.stringify({ result: "Success"}));
   res.end();
+  // Send Kafka message to stop Data Pump
+  var body = {
+    demozone: DEMOZONE,
+    component: 'XDK',
+    action: 'stop',
+    truckid: DEMOZONE.substring(0,3) + movingTruck.toUpperCase(),
+    timer: DURATION
+  }
+  log.verbose(REST, "Publishing Truck action to Kafka");
+  kafkaProxy.post(KAFKAURI, body, (err, req, res, data) => {
+    if (err) {
+      if (err.statusCode) {
+        log.error(IOTCS,"Error publishing Truck action to Kafka: " + err.statusCode);
+      }
+      return;
+    }
+  });
   movingTruck = _.noop();
 });
 
