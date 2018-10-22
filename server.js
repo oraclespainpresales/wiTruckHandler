@@ -31,6 +31,11 @@ log.info(BLE, "Using BLE device id: " + (process.env.NOBLE_HCI_DEVICE_ID || 0));
 var DEMOZONE = DEFAULTDEMOZONE;
 fs.readFile(DEMOZONEFILE,'utf8').then((data)=>{DEMOZONE=data.trim();log.info(PROCESS, 'Working for demozone: %s', DEMOZONE);}).catch(() => {});
 
+var TRUCKS = [
+  { truck: "FREE WHEEL", id: "FW" },
+  { truck: "X52", id: "X52" }
+];
+
 // Initializing REST client BEGIN
 var kafkaProxy = restify.createJsonClient({
   url: KAFKAURL,
@@ -235,7 +240,9 @@ app.post('/start/:carname/:speedAlias', function (req, res) {
   res.set('Content-Type', 'application/json');
   res.send(JSON.stringify({ result: "Success"}));
   res.end();
-  movingTruck = carName;
+
+  movingTruck = _.find(TRUCKS, { truck: carName.toUpperCase() }).id;
+
   // Send Kafka message to start Data Pump
   var body = {
     demozone: DEMOZONE,
