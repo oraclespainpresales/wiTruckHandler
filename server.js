@@ -241,15 +241,15 @@ app.post('/start/:carname/:speedAlias', function (req, res) {
   res.send(JSON.stringify({ result: "Success"}));
   res.end();
 
-  movingTruck = _.find(TRUCKS, { truck: carName.toUpperCase() }).id;
+  movingTruck = carName;
 
   // Send Kafka message to start Data Pump
   var body = {
     demozone: DEMOZONE,
     component: 'XDK',
     action: 'start',
-    truckid: DEMOZONE.substring(0,3) + movingTruck.toUpperCase(),
-    timer: DURATION
+    truckid: DEMOZONE.substring(0,3) +  _.find(TRUCKS, { truck: carName.toUpperCase() }).id/**,
+    timer: DURATION**/
   }
   log.verbose(REST, "Publishing Truck action to Kafka");
   kafkaProxy.post(KAFKAURI, body, (err, req, res, data) => {
@@ -294,8 +294,8 @@ app.post('/stop/:carname?', function (req, res) {
     demozone: DEMOZONE,
     component: 'XDK',
     action: 'stop',
-    truckid: DEMOZONE.substring(0,3) + movingTruck.toUpperCase(),
-    timer: DURATION
+    truckid: DEMOZONE.substring(0,3) +  _.find(TRUCKS, { truck: carName.toUpperCase() }).id/**,
+    timer: DURATION**/
   }
   log.verbose(REST, "Publishing Truck action to Kafka");
   kafkaProxy.post(KAFKAURI, body, (err, req, res, data) => {
