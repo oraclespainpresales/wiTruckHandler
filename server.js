@@ -12,7 +12,7 @@ const log = require('npmlog-ts')
 ;
 
 const PORT = 7877
-    , KAFKATOPIC = "gse00011668-wedoindustryactions"
+    , KAFKATOPIC = "wedoindustryactions"
     , KAFKAURL   = "http://infra.digitalpracticespain.com:10200"
     , KAFKAURI   = "/kafka/send/" + KAFKATOPIC
 ;
@@ -293,11 +293,11 @@ app.post('/stop/:carname?', function (req, res) {
   var body = {
     demozone: DEMOZONE,
     component: 'XDK',
-    action: 'stop',
-    truckid: DEMOZONE.substring(0,3) +  _.find(TRUCKS, { truck: carName.toUpperCase() }).id/**,
+    action: 'stop'/**,
+    truckid: DEMOZONE.substring(0,3) +  _.find(TRUCKS, { truck: carName.toUpperCase() }).id,
     timer: DURATION**/
   }
-  log.verbose(REST, "Publishing Truck action to Kafka");
+  log.verbose(REST, "Publishing Truck action to Kafka: %j", body);
   kafkaProxy.post(KAFKAURI, body, (err, req, res, data) => {
     if (err) {
       if (err.statusCode) {
