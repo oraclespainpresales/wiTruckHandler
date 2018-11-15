@@ -11,10 +11,16 @@ const log = require('npmlog-ts')
     , fs = require('fs-extra')
 ;
 
-const PORT = 7877
-    , KAFKATOPIC = "wedoindustryactions"
-    , KAFKAURL   = "http://infra.digitalpracticespain.com:10200"
-    , KAFKAURI   = "/kafka/send/" + KAFKATOPIC
+const DBHOST        = "https://apex.digitalpracticespain.com"
+    , DBURI         = '/ords/pdb1/wedoindustry'
+    , EVENTHUBSETUP = '/setup/eventhub'
+;
+
+const PORT     = 7877
+    , KAFKAURL = "http://infra.digitalpracticespain.com:10200"
+;
+
+var KAFKAURI = "/kafka/send/"
 ;
 
 log.timestamp = true;
@@ -48,7 +54,28 @@ var kafkaProxy = restify.createJsonClient({
     "accept": "application/json"
   }
 });
+var dbClient = restify.createJsonClient({
+  url: DBHOST,
+  connectTimeout: 10000,
+  requestTimeout: 10000,
+  retry: false,
+  rejectUnauthorized: false,
+  headers: {
+    "content-type": "application/json",
+    "accept": "application/json"
+  }
+});
 // Initializing REST client END
+
+log.verbose(PROCESS, "Retrieving EventHub setup");
+dbClient.get(DBURI + EVENTHUBSETUP, function(err, req, res, obj) {
+  if (err) {
+    log.verbose(REST, "Error retrieving EventHub setup: %s", err.message);
+    process.exit(-1);
+  }
+  var jBody = JSON.parse(res.body);
+  KAFKAURI += jBody.actiontopic.replace('{demozone}', DEMOZONE.toLowerCase());
+});
 
 var app = express();
 app.use(bodyParser.urlencoded({extended: false}));
