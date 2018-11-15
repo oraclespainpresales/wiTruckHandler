@@ -278,7 +278,7 @@ app.post('/start/:carname/:speedAlias', function (req, res) {
     truckid: DEMOZONE.substring(0,3) +  _.find(TRUCKS, { truck: carName.toUpperCase() }).id/**,
     timer: DURATION**/
   }
-  log.verbose(REST, "Publishing Truck action to Kafka");
+  log.verbose(REST, "Publishing Truck action to Kafka: %j", body);
   kafkaProxy.post(KAFKAURI, body, (err, req, res, data) => {
     if (err) {
       if (err.statusCode) {
