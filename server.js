@@ -11,13 +11,13 @@ const log = require('npmlog-ts')
     , fs = require('fs-extra')
 ;
 
-const DBHOST        = "https://apex.digitalpracticespain.com"
+const DBHOST        = "https://apex.wedoteam.io"
     , DBURI         = '/ords/pdb1/wedoindustry'
     , EVENTHUBSETUP = '/setup/eventhub'
 ;
 
 const PORT     = 7877
-    , KAFKAURL = "http://infra.digitalpracticespain.com:10200"
+    , KAFKAURL = "http://infra.wedoteam.io:10200"
 ;
 
 var KAFKAURI = "/kafka/send/"
