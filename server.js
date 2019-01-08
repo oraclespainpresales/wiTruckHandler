@@ -17,7 +17,7 @@ const DBHOST        = "https://apex.wedoteam.io"
 ;
 
 const PORT     = 7877
-    , KAFKAURL = "http://infra.wedoteam.io:10200"
+    , KAFKAURL = "https://infra.wedoteam.io:10200"
 ;
 
 var KAFKAURI = "/kafka/send/"
